@@ -1,8 +1,36 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-
+import React from 'react'
 export default function Home() {
+
+  const [city, setCity] = React.useState('sofia');
+  const [weather, setWeather] = React.useState([]);
+  const [val, setVal] = React.useState();
+  const [celsius, setCelsius] = React.useState(false);
+
+  const data = () => {
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=2ac597dfa6e78bc7452bebd703abecd6`)
+      .then(response => response.json())
+      .then(data => setWeather(data))
+
+  }
+
+  React.useEffect(() => {
+    data();
+  }, [city])
+
+  function handleChange(e) {
+    e.preventDefault();
+    setCity(val)
+  }
+
+  function toCelsius(fahrenheit) {
+    let num = String(fahrenheit - 273.15);
+    return (num.slice(0, 4))
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,44 +40,40 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+        {weather.coord ?
+          <div>
+            <p>Location: {weather.name}</p>
+            <p>Sky: {weather.weather[0].main}</p>
+            <p>Description: {weather.weather[0].description}</p>
+            <div>Current temperature: {celsius ? toCelsius(weather.main.temp) + ' celsius' : weather.main.temp + ' kalvins'}</div>
+            <button onClick={() => setCelsius(!celsius)}>{!celsius ? 'To kalvins' : 'To fahrenheit'}</button>
+            <br></br>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+            <img src={`http://openweathermap.org/img/w/${weather.weather[0].icon}.png`} />
+            <p>Lon: {weather.coord.lon}</p>
+            <p>Lat:{weather.coord.lat}</p>
+            <p>Feels like:  {celsius ? toCelsius(weather.main.feels_like) : weather.main.feels_like}</p>
+            <p>Humidity:{weather.main.humidity}</p>
+            <p>Wind speed:{weather.wind.speed} km/h</p>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+            <form>
+              <input type="text" onChange={() => setVal(event.target.value)} />
+              <button onClick={handleChange}>Search</button>
+            </form>
+          </div>
+          :
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+          <>
+            <form>
+              <input type="text" onChange={() => setVal(event.target.value)} />
+              <button onClick={handleChange}>Submit</button>
+            </form>
+            {weather.cod && 'Location not found!'}</>
+        }
+
+
       </main>
 
       <footer className={styles.footer}>
