@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import ReactMapGL, { Marker } from 'react-map-gl';
+import Image from 'next/image'
+
 
 const MapboxExample = ({ lat, lon }) => {
     const [viewport, setViewport] = useState({
@@ -21,7 +23,7 @@ const MapboxExample = ({ lat, lon }) => {
                 mapboxApiAccessToken='pk.eyJ1IjoidWhiNTciLCJhIjoiY2tjMW0xb2QyMXV6MDJ3bXgzc2NvaDYyciJ9.74xioo09S3OPwuNKE5J6RQ'
             >
                 <Marker latitude={lat} longitude={lon} offsetLeft={-20} offsetTop={-10}>
-                    <img src="../location.png" width='50' />
+                    <Image src="/location.png" alt="marker" width='50' height='70' />
                 </Marker>
             </ReactMapGL>
         </div>
