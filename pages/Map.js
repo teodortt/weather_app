@@ -7,7 +7,7 @@ const MapboxExample = ({ lat, lon }) => {
     const [viewport, setViewport] = useState({
         latitude: lat,
         longitude: lon,
-        zoom: 7.8,
+        zoom: 5.8,
         bearing: 0,
         pitch: 0,
     });
@@ -16,8 +16,8 @@ const MapboxExample = ({ lat, lon }) => {
         <div className="mapbox-react">
             <ReactMapGL
                 {...viewport}
-                width="1000px"
-                height="500px"
+                width="100%"
+                height="250px"
                 mapStyle="mapbox://styles/mapbox/streets-v11"
                 onViewportChange={nextViewport => setViewport(nextViewport)}
                 mapboxApiAccessToken='pk.eyJ1IjoidWhiNTciLCJhIjoiY2tjMW0xb2QyMXV6MDJ3bXgzc2NvaDYyciJ9.74xioo09S3OPwuNKE5J6RQ'
